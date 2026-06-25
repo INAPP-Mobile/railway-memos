@@ -1,6 +1,6 @@
 # Memos — Railway Deployment Template
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/cq9Ag2)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/memos-3)
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-usememos/memos-181717?style=flat-square&logo=github)](https://github.com/usememos/memos)
 [![Docker Pulls](https://img.shields.io/docker/pulls/neosmemo/memos?style=flat-square&logo=docker)](https://hub.docker.com/r/neosmemo/memos)
@@ -41,7 +41,7 @@
 
 ## One-Click Deploy
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/cq9Ag2)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/memos-3)
 
 Click the button above and Railway will:
 
