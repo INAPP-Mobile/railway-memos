@@ -19,7 +19,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${MEMOS_PORT:-5230}/health || exit 1
 
 # ---------------------------------------------------------------------------
-# Default environment variables
+# Port Configuration — Railway V2 sets PORT; Memos reads MEMOS_PORT.
+# Map Railway's PORT to MEMOS_PORT so the proxy routes correctly.
 # ---------------------------------------------------------------------------
 ENV MEMOS_PORT=5230 \
     TZ=UTC
@@ -36,4 +37,4 @@ EXPOSE 5230
 #   3. Execs the memos binary
 # ---------------------------------------------------------------------------
 ENTRYPOINT ["/usr/local/memos/entrypoint.sh"]
-CMD ["/usr/local/memos/memos", "--port", "5230", "--data", "/var/opt/memos"]
+CMD /bin/sh -c 'PORT=${PORT:-5230}; exec /usr/local/memos/memos --port "$PORT" --data /var/opt/memos'
