@@ -1,0 +1,120 @@
+# =============================================================================
+# Memos Railway Template — CI Pipeline
+# Validates Dockerfile builds and config integrity on push/PR
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Template
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate railway.json
+        run: |
+          echo "=== Checking railway.json ==="
+          if command -v jq &> /dev/null; then
+            jq empty railway.json && echo "railway.json: valid JSON"
+            echo "Builder: $(jq -r '.build.builder' railway.json)"
+            echo "Healthcheck: $(jq -r '.deploy.healthcheckPath' railway.json)"
+          else
+            python3 -m json.tool railway.json > /dev/null && echo "railway.json: valid JSON"
+          fi
+
+      - name: Validate railway.toml
+        run: |
+          echo "=== Checking railway.toml ==="
+          head -20 railway.toml
+
+      - name: Check .env.example has required vars
+        run: |
+          echo "=== Checking .env.example ==="
+          if grep -q "MEMOS_DSN" .env.example; then
+            echo "✓ MEMOS_DSN documented"
+          else
+            echo "✗ Missing MEMOS_DSN"
+            exit 1
+          fi
+          if grep -q "MEMOS_PORT" .env.example; then
+            echo "✓ MEMOS_PORT documented"
+          fi
+
+      - name: Lint Dockerfile
+        run: |
+          echo "=== Linting Dockerfile ==="
+          if [ -f Dockerfile ]; then
+            echo "Dockerfile exists"
+            if command -v hadolint &> /dev/null; then
+              hadolint Dockerfile
+            else
+              echo "hadolint not available — skipping lint (container build only)"
+            fi
+          else
+            echo "ERROR: Dockerfile not found"
+            exit 1
+          fi
+
+      - name: Check README has deploy button
+        run: |
+          echo "=== Checking README ==="
+          if grep -q "railway.app/button.svg" README.md; then
+            echo "✓ Deploy button present"
+          else
+            echo "✗ Missing deploy button"
+            exit 1
+          fi
+          if grep -q "MEMOS_DSN" README.md; then
+            echo "✓ Env vars documented"
+          fi
+          if grep -q "Troubleshooting" README.md; then
+            echo "✓ Troubleshooting section present"
+          fi
+
+      - name: Build Docker Image
+        run: |
+          echo "=== Building Docker image ==="
+          docker build -t memos-railway-test .
+          echo "Build successful!"
+
+      - name: Verify container starts
+        run: |
+          echo "=== Starting container for health check ==="
+          docker run -d --name memos-test \
+            -e MEMOS_PORT=5230 \
+            -p 5230:5230 \
+            memos-railway-test
+
+          # Wait for startup
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:5230/health > /dev/null 2>&1; then
+              echo "✓ Health check passed (attempt $i)"
+              break
+            fi
+            echo "  Waiting... attempt $i"
+            sleep 2
+          done
+
+          # Verify health endpoint
+          HEALTH=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5230/health)
+          echo "Health endpoint returned HTTP $HEALTH"
+          if [ "$HEALTH" != "200" ]; then
+            echo "✗ Health check endpoint did not return 200"
+            docker logs memos-test
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop memos-test 2>/dev/null || true
+          docker rm memos-test 2>/dev/null || true

@@ -1,0 +1,18 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 10
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+
+[volumes]
+  [volumes.memos-data]
+    mountPath = "/var/opt/memos"
+    # Persistent volume for memos data (SQLite or metadata when using PostgreSQL)
+
+[[services]]
+name = "memos"
+# Railway will assign an internal port — Memos listens on 5230
