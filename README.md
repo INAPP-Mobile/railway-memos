@@ -90,22 +90,7 @@ MEMOS_LOG_LEVEL=info
 
 ## Service Dependencies
 
-```
-┌──────────────┐     ┌──────────────────┐
-│   Railway    │     │    PostgreSQL    │
-│   Router     │────▶│   (Railway)     │
-│  *.railway   │     │  DATABASE_URL   │
-│   .app       │     │     :5432       │
-└──────┬───────┘     └──────────────────┘
-       │
-       │  port 5230
-       ▼
-┌──────────────┐     ┌──────────────────┐
-│   Memos      │     │   Persistent     │
-│  Container   │────▶│     Volume       │
-│  :5230       │     │  /var/opt/memos  │
-└──────────────┘     └──────────────────┘
-```
+<img src="assets/architecture.svg" alt="Memos on Railway Architecture" width="100%">
 
 - **PostgreSQL**: Managed by Railway's addon system. Data persists across deploys.
 - **Persistent Volume**: At `/var/opt/memos` — stores SQLite metadata (when used) and uploaded assets.
