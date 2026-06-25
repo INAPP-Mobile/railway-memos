@@ -24,6 +24,16 @@
 - **PostgreSQL Database** — Railway-native PostgreSQL for production-grade persistence (replaces default SQLite).
 - **Open & Extensible** — MIT-licensed with full REST and gRPC APIs for integration.
 
+---
+
+## Screenshots
+
+| Timeline View | Compose Editor | Explore Feed |
+|---|---|---|
+| <img src="assets/screenshot-timeline.png" alt="Timeline view with memos and calendar" width="300"> | <img src="assets/screenshot-compose.png" alt="Compose editor with markdown support" width="300"> | <img src="assets/screenshot-explore.png" alt="Explore feed with tag filtering" width="300"> |
+
+All screenshots captured from a live Railway deployment at [memos-production-2206.up.railway.app](https://memos-production-2206.up.railway.app).
+
 ### Why Memos on Railway?
 
 | Feature | Benefit |
