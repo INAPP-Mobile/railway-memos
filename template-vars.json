@@ -1,0 +1,27 @@
+{
+  "MEMOS_DSN": {
+    "defaultValue": "${{Postgres.DATABASE_URL}}",
+    "description": "Database connection string. Add a Railway Postgres service to auto-inject. Leave empty for SQLite (default).",
+    "isOptional": true
+  },
+  "MEMOS_PORT": {
+    "defaultValue": "5230",
+    "description": "Port Memos listens on (default: 5230). Railway injects PORT for routing.",
+    "isOptional": true
+  },
+  "TZ": {
+    "defaultValue": "UTC",
+    "description": "Timezone (e.g., America/New_York, Europe/London).",
+    "isOptional": true
+  },
+  "MEMOS_ADMIN_EMAIL": {
+    "defaultValue": "",
+    "description": "Admin email for first-time setup. Set before initial deploy to pre-configure admin account.",
+    "isOptional": true
+  },
+  "MEMOS_ADMIN_PASSWORD": {
+    "defaultValue": "${{secret(24)}}",
+    "description": "Admin password for first-time setup. Auto-generated — set before initial deploy to configure admin account.",
+    "isOptional": true
+  }
+}

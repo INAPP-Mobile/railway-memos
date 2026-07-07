@@ -1,0 +1,22 @@
+[
+  {
+    "value": "${{Postgres.DATABASE_URL}}",
+    "description": "Database connection string. Add a Railway Postgres service to auto-inject. Leave empty for SQLite (default)."
+  },
+  {
+    "value": "5230",
+    "description": "Port Memos listens on (default: 5230). Railway injects PORT for routing."
+  },
+  {
+    "value": "UTC",
+    "description": "Timezone (e.g., America/New_York, Europe/London)."
+  },
+  {
+    "value": "",
+    "description": "Admin email for first-time setup. Set before initial deploy to pre-configure admin account."
+  },
+  {
+    "value": "${{secret(24)}}",
+    "description": "Admin password for first-time setup. Auto-generated — set before initial deploy to configure admin account."
+  }
+]
