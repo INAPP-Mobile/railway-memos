@@ -1,6 +1,6 @@
 # Memos — Railway Deployment Template
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/memos-3)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/new/template/memos-3)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/INAPP-Mobile/railway-memos/main/og-image.svg" alt="Memos on Railway" width="100%">
@@ -55,7 +55,7 @@ All screenshots captured from a live Railway deployment at [memos-production-220
 
 ## One-Click Deploy
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/memos-3)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/new/template/memos-3)
 
 Click the button above and Railway will:
 
@@ -293,3 +293,36 @@ The upstream [Memos](https://github.com/usememos/memos) project is also MIT-lice
 <div align="center">
   <sub>Built with ❤️ by the Memos community · Deployed on <a href="https://railway.app">Railway</a></sub>
 </div>
+
+
+# Deploy and Host
+
+Deploy this template on Railway with one click. Railway provides compute, TLS at the edge, and a public URL. The service restarts automatically on failures.
+
+## About Hosting
+
+This template runs as a single container with no external database dependencies. All data is stored using built-in storage — no PostgreSQL, Redis, or additional services required.
+
+## Why Deploy
+
+- **One-click deploy** — No configuration, no setup, just deploy
+- **Zero external dependencies** — Single container, no external database needed
+- **Automatic HTTPS** — Railway provisions TLS certificates automatically
+- **Self-healing** — Automatic restarts on failure
+- **Persistent storage** — Optional Railway volume for data persistence
+
+## Common Use Cases
+
+- Self-hosted service for personal or team use
+- Production deployment with zero maintenance overhead
+- Privacy-focused alternative to cloud-hosted solutions
+- Lightweight deployment on Railway's free tier
+
+## Dependencies for
+
+### Deployment Dependencies
+
+Memos uses SQLite by default. An optional PostgreSQL database can be configured via the MEMOS_DSN or DATABASE_URL environment variable.
+
+- [Railway Account](https://railway.app) — hosting platform
+- No external database, cache, or message queue required
