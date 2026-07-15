@@ -21,7 +21,6 @@
 - **Instant Capture** — Timeline-first UI. Open, write, done. No folders to navigate.
 - **Total Data Ownership** — Self-hosted on your infrastructure. Notes stored in Markdown, always portable. Zero telemetry.
 - **Radical Simplicity** — Single Go binary, ~20MB Docker image, <128MB RAM. Runs comfortably on Railway's free tier.
-- **PostgreSQL Database** — Railway-native PostgreSQL for production-grade persistence (replaces default SQLite).
 - **Open & Extensible** — MIT-licensed with full REST and gRPC APIs for integration.
 
 ---
@@ -58,18 +57,17 @@ All screenshots captured from a live Railway deployment at [memos-production-220
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/new/template/memos-3)
 
 Click the button above and Railway will:
-
 1. Clone this template repository
-2. Provision a PostgreSQL database
-3. Build and deploy the Memos container
-4. Expose it on a `*.railway.app` domain
+2. Deploy the Memos container with built-in SQLite storage (no separate database needed)
+3. Expose it on a `*.railway.app` domain
+4. Auto-provision HTTPS at edge
 
 **Or deploy manually:**
 
 1. Click **New Project** → **Deploy from GitHub repo**
 2. Fork this repository to your GitHub account
 3. Connect your fork to Railway
-4. Add a **PostgreSQL** plugin (Railway injects `DATABASE_URL`)
+Deployed with built-in SQLite storage (no separate database needed)
 5. Set the environment variables (see table below)
 6. Deploy!
 
@@ -81,7 +79,7 @@ Memos is configured entirely through environment variables. The template handles
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `MEMOS_DSN` | No* | SQLite | PostgreSQL/MySQL DSN. Railway auto-maps from `DATABASE_URL`. |
+| `MEMOS_DSN` | No* | SQLite (default) | Built-in SQLite storage used by default; no external database required. |
 | `MEMOS_PORT` | No | `5230` | HTTP listen port |
 | `TZ` | No | `UTC` | Server timezone |
 | `MEMOS_LOG_LEVEL` | No | `info` | Log verbosity: `debug`, `info`, `warn`, `error` |
@@ -104,10 +102,7 @@ MEMOS_LOG_LEVEL=info
 
 ## Service Dependencies
 
-<img src="assets/architecture.svg" alt="Memos on Railway Architecture" width="100%">
-
-- **PostgreSQL**: Managed by Railway's addon system. Data persists across deploys.
-- **Persistent Volume**: At `/var/opt/memos` — stores SQLite metadata (when used) and uploaded assets.
+- **Persistent Volume**: At `/var/opt/memos` — stores the built-in SQLite database file and any uploaded assets.
 - **No Redis or external services needed** — Memos is self-contained.
 
 ---
@@ -133,8 +128,6 @@ docker run -d \
 ```
 
 Open http://localhost:5230 — you'll be prompted to create an admin account.
-
-### Running with Docker Compose (PostgreSQL)
 
 ```yaml
 # docker-compose.yml
@@ -200,26 +193,20 @@ go build -trimpath -tags netgo,osusergo -o memos ./cmd/memos
 2. Ensure the PostgreSQL addon is provisioned and `DATABASE_URL` is injected.
 3. Check Railway logs: `railway logs`.
 
-### Database connection failures
+### Data persistence
 
-```
-FATA[0000] failed to connect to database: dial tcp ...
-```
+- Memos stores its SQLite database at `/var/opt/memos`. Railway volumes automatically persist this.
 
-- Verify `DATABASE_URL` is set in Railway dashboard → Variables.
-- If using custom `MEMOS_DSN`, ensure the connection string is correct.
-- For Railway PostgreSQL, the `sslmode=require` parameter is required.
 
 ### Data doesn't persist after restart
 
 - Memos stores data at `/var/opt/memos`. Railway volumes must be mounted here.
 - If using SQLite, the database file is stored at the volume path.
-- If using PostgreSQL, only uploaded assets are on the volume.
 
 ### Memory or performance issues
-
+### Memory or performance issues
 - Memos uses <128MB RAM under normal load.
-- If using PostgreSQL, ensure your Railway plan has adequate connections.
+- If using PostgreSQL, ensure your Railway plan has adequate connections. This is optional and not required for core functionality.
 - Check `MEMOS_LOG_LEVEL=debug` for verbose diagnostics.
 
 ### Admin account lockout
@@ -244,7 +231,7 @@ Then restart — Memos will prompt for a new admin account on next launch.
 | RAM | 64 MB | 128 MB |
 | CPU | 0.25 vCPU | 0.5 vCPU |
 | Disk | 256 MB | 1 GB |
-| Database | — | PostgreSQL (Railway Hobby) |
+| Database | SQLite (built-in) | PostgreSQL (optional, add separately from Railway marketplace) |
 
 ---
 
@@ -301,7 +288,7 @@ Deploy this template on Railway with one click. Railway provides compute, TLS at
 
 ## About Hosting
 
-This template runs as a single container with no external database dependencies. All data is stored using built-in storage — no PostgreSQL, Redis, or additional services required.
+This template runs as a single container with no external database dependencies. All data is stored in the container's persistent volume as an embedded SQLite database — no external database required for core functionality.
 
 ## Why Deploy
 

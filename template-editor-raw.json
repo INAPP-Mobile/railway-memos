@@ -1,8 +1,4 @@
 {
-  "MEMOS_DSN": {
-    "value": "${{Postgres.DATABASE_URL}}",
-    "description": "Database connection string. Add a Railway Postgres service to auto-inject. Leave empty for SQLite (default)."
-  },
   "MEMOS_PORT": {
     "value": "5230",
     "description": "Port Memos listens on (default: 5230). Railway injects PORT for routing."
@@ -10,6 +6,10 @@
   "TZ": {
     "value": "UTC",
     "description": "Timezone (e.g., America/New_York, Europe/London)."
+  },
+  "MEMOS_LOG_LEVEL": {
+    "value": "",
+    "description": "Log verbosity level. Default: info. Options: debug, info, warn, error."
   },
   "MEMOS_ADMIN_EMAIL": {
     "value": "",
