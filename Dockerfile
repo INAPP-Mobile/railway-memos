@@ -8,8 +8,8 @@
 # Use the official pinned image for reproducible builds
 # Pin to the `stable` tag (Memos' rolling release following v0.29.x).
 # Replace with a specific digest for production reproducibility:
-#   docker pull neosmemo/memos:stable && docker inspect --format='{{index .RepoDigests 0}}' neosmemo/memos:stable
-FROM neosmemo/memos:stable
+#   docker pull neosmemo/memos:26.11.1 && docker inspect --format='{{index .RepoDigests 0}}' neosmemo/memos:26.11.1
+FROM neosmemo/memos:26.11.1
 
 # ---------------------------------------------------------------------------
 # Railway Health Check
